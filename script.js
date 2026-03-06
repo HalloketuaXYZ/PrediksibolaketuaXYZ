@@ -1,49 +1,85 @@
-function loadMatches(){
+const API_KEY = "zRP55GqpQ3hpGLzhplWoSlSidDvE0KSL5KQXfKpYOLCnqcTQpbOS9RfoElpP";
 
-const matches = [
-["Arsenal","Liverpool"],
-["Manchester City","Chelsea"],
-["Barcelona","Real Madrid"],
-["Bayern Munich","Dortmund"],
-["PSG","Marseille"],
-["Inter Milan","Juventus"],
-["AC Milan","Napoli"],
-["Atletico Madrid","Sevilla"],
-["Tottenham","Newcastle"],
-["Roma","Lazio"]
-]
+async function loadMatches(){
 
-let html=""
+document.getElementById("matches").innerHTML="Loading pertandingan..."
 
-matches.forEach(match=>{
+let today = new Date().toISOString().split("T")[0]
+
+let url = `https://api.sportmonks.com/v3/football/fixtures/date/${today}?api_token=${API_KEY}&include=participants`
+
+let res = await fetch(url)
+
+let data = await res.json()
+
+let matches = data.data.slice(0,10)
+
+showMatches(matches)
+
+}
+
+function generatePrediction(){
 
 let homeScore = Math.floor(Math.random()*4)
 let awayScore = Math.floor(Math.random()*4)
 
-let homeChance = Math.floor(Math.random()*40)+35
+let homeChance = Math.floor(Math.random()*40)+40
 let drawChance = Math.floor(Math.random()*20)+10
 let awayChance = 100-homeChance-drawChance
 
 let overUnder = Math.random()>0.5?"Over 2.5":"Under 2.5"
 
-html += `
+return{
+score:`${homeScore} - ${awayScore}`,
+homeChance,
+drawChance,
+awayChance,
+overUnder
+}
 
-<div class="match-card">
+}
+
+function showMatches(matches){
+
+let html=""
+
+matches.forEach(match=>{
+
+let home = match.participants[0]
+let away = match.participants[1]
+
+let p = generatePrediction()
+
+html+=`
+
+<div class="card">
 
 <div class="teams">
-${match[0]} <span>VS</span> ${match[1]}
+
+<div class="team">
+<img src="${home.image_path}">
+${home.name}
+</div>
+
+<div class="vs">VS</div>
+
+<div class="team">
+<img src="${away.image_path}">
+${away.name}
+</div>
+
 </div>
 
 <div class="score">
-Prediksi Skor : ${homeScore} - ${awayScore}
+Prediksi Skor : ${p.score}
 </div>
 
-<div class="chance">
-${match[0]} ${homeChance}% | Draw ${drawChance}% | ${match[1]} ${awayChance}%
+<div class="stats">
+Win Chance : ${home.name} ${p.homeChance}% | Draw ${p.drawChance}% | ${away.name} ${p.awayChance}%
 </div>
 
-<div class="ou">
-${overUnder}
+<div class="stats">
+${p.overUnder}
 </div>
 
 </div>
@@ -52,6 +88,6 @@ ${overUnder}
 
 })
 
-document.getElementById("matches").innerHTML = html
+document.getElementById("matches").innerHTML=html
 
 }
