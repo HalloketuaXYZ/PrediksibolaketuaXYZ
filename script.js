@@ -1,13 +1,4 @@
-const API_KEY = "<api-sports-widget data-type="leagues"></api-sports-widget>
-
-<!-- Configuration -->
-<api-sports-widget data-type="config"
-  data-key="cb73b983fd392f8e824508f2bf2e81d5"
-  data-sport="football"
-  data-lang="en"
-  data-theme="white"
-  data-show-errors="true"
-></api-sports-widget>";
+const API_KEY = "zRP55GqpQ3hpGLzhplWoSlSidDvE0KSL5KQXfKpYOLCnqcTQpbOS9RfoElpP";
 
 const leagues = [
 39,     // Premier League
